@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/khc/MyProject/ProjectAI/opencv/sdk/.cxx/Debug/5a1n512i/arm64-v8a'
+ninja: no work to do.

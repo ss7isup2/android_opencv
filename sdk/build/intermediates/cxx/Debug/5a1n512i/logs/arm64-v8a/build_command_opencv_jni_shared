@@ -1,0 +1,4 @@
+/Users/khc/Library/Android/sdk/cmake/3.22.1/bin/ninja \
+  -C \
+  /Users/khc/MyProject/ProjectAI/opencv/sdk/.cxx/Debug/5a1n512i/arm64-v8a \
+  opencv_jni_shared
