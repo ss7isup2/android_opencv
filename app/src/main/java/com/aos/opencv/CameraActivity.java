@@ -19,10 +19,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import androidx.annotation.NonNull;
+
 import com.aos.opencv.databinding.ActivityCameraBinding;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;
+import org.opencv.dnn.Net;
+import org.opencv.imgproc.Imgproc;
+
+import java.util.List;
 
 public class CameraActivity extends Activity implements CameraBridgeViewBase.CvCameraViewListener2 {
     ActivityCameraBinding binding;
@@ -102,7 +108,8 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
 //        getHolder().unlockCanvasAndPost(canvas);
 
 
-
+        net = Load.Companion.loadModel(getAssets(), getFilesDir().toString());
+        labels = Load.Companion.loadLabel(getAssets());
 
 
 
@@ -150,28 +157,47 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
 
     public void onCameraViewStopped() { }
 
+    private Net net;
+    private String[] labels;
+
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
 
+//        Mat rgba = inputFrame.rgba();
+//
+//        Mat edge = getEdgeImage(inputFrame, 50, 150);
+//
+//        Mat flip = new Mat();
+//
+//        if (mCameraId == 1) {   // front camera
+//            flipJNI(edge.getNativeObjAddr(), flip.getNativeObjAddr(), 1);
+//
+//            return flip;
+//        }
+//
+//        return edge;
+
+//        return inputFrame.rgba();
+
+        if (inputFrame == null) return null;
+
+        Mat frameMat = inputFrame.rgba();
+
+        List<Result> results = Inference.Companion.detect(frameMat, net, labels);
+        Imgproc.cvtColor(frameMat, frameMat, Imgproc.COLOR_RGBA2RGB);
+        Mat outMat = Draw.Companion.drawSeg(frameMat, results, labels);
+
+        frameMat.release();
+        return outMat;
+
+    }
+
+    Mat getEdgeImage(CameraBridgeViewBase.CvCameraViewFrame inputFrame, int th1, int th2) {
         Mat rgba = inputFrame.rgba();
 
         Mat edge = new Mat();
 
-        detectEdgeJNI(rgba.getNativeObjAddr(), edge.getNativeObjAddr(), 50, 150);
-
-        Mat flip = new Mat();
-
-        if (mCameraId == 1) {   // front camera
-            flipJNI(edge.getNativeObjAddr(), flip.getNativeObjAddr(), 1);
-
-            return flip;
-        }
+        detectEdgeJNI(rgba.getNativeObjAddr(), edge.getNativeObjAddr(), th1, th2);
 
         return edge;
-//        return inputFrame.rgba();
-
     }
-
-
-
-
 }
