@@ -65,6 +65,7 @@ class Segment {
                 thresholdMask.convertTo(thresholdMask, CvType.CV_8UC1)
                 boxOutputs[i].maskMat.release()
                 boxOutputs[i].maskMat = thresholdMask
+                boxOutputs[i].maskMatAddr = boxOutputs[i].maskMat.nativeObjAddr;
 
                 mask.release()
                 resizedCropMask.release()

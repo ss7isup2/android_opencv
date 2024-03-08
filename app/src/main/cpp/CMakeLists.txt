@@ -42,7 +42,8 @@ add_library(
         SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         native-lib.cpp
-        native-lib2.cpp)
+        native-lib2.cpp
+        LoadYolov8.cpp)
 
 add_library(lib_opencv SHARED IMPORTED)
 
@@ -56,10 +57,10 @@ set_target_properties(lib_opencv PROPERTIES IMPORTED_LOCATION ${pathLIBOPENCV_JA
 
 find_library( # Sets the name of the path variable.
         log-lib
-
         # Specifies the name of the NDK library that
         # you want CMake to locate.
-        log)
+        log
+        android)
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
@@ -71,6 +72,7 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries(
         native-lib
+        android
         # List libraries link to the target library
         lib_opencv
         ${log-lib})

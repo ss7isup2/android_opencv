@@ -122,7 +122,7 @@ class Inference {
                 val score = max.maxVal.toFloat()
                 val index = max.maxLoc.x.toInt()
                 val mask = detections.row(it).colRange(4 + labelSize, detections.cols())
-                val result = Result(rect, score, index, mask)
+                val result = Result(rect, score, index, mask, mask.nativeObjAddr)
                 list.add(result)
             }
             detections.release()
