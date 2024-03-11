@@ -118,13 +118,13 @@ Java_com_aos_opencv_CameraActivity_LoadLabel(JNIEnv *env, jobject instance, jobj
 
     LoadYolov8::labels.clear();
 
-    std::string assetText(fileSize + 1, 0x00);
+    std::string assetText(fileSize, 0x00);
     AAsset_read(asset, (void*)assetText.data(), fileSize);
 
     std::istringstream ss(assetText);
 
     while (getline(ss, line, '\n')){
-        if (line.compare("\0") == 0) continue;
+        if (line.compare("\0\n") == 0) continue;
         LoadYolov8::labels.push_back(line);
     }
 

@@ -167,8 +167,10 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
 
     public native void detectEdgeJNI(long inputImage, long outputImage, int th1, int th2);
     public native void DrawSeg(long inputImage, long outputImage, Result[] resultArray, String[] stringArray);
-//    public native jobjectArray Detect(long inputImage, long netAddr, String[] stringArray);
+    public native void Detect(long inputImage);
     public native void flipJNI(long inputImage, long outputImage, int flipCode);
+
+    Mat outMat = null;
 
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
 
@@ -184,28 +186,36 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
 
         if (inputFrame == null) return null;
 
-        // java로 처리
         Mat frameMat = inputFrame.rgba();
 
-        List<Result> results = Inference.Companion.detect(frameMat, net, labels);
-        Imgproc.cvtColor(frameMat, frameMat, Imgproc.COLOR_RGBA2RGB);
 
-//        Mat outMat = Draw.Companion.drawSeg(frameMat, results, labels);
+
+//        // java로 처리
+//        {
+//            List<Result> results = Inference.Companion.detect(frameMat, net, labels);
+//            Imgproc.cvtColor(frameMat, frameMat, Imgproc.COLOR_RGBA2RGB);
+//
+//            outMat = Draw.Companion.drawSeg(frameMat, results, labels);
+//        }
+
 
 
         // jni로 처리
-//        Detect(frameMat.getNativeObjAddr(), net.getNativeObjAddr(), labels);
-//        Imgproc.cvtColor(frameMat, frameMat, Imgproc.COLOR_RGBA2RGB);
+        {
+            Detect(frameMat.getNativeObjAddr());
+//            Imgproc.cvtColor(frameMat, frameMat, Imgproc.COLOR_RGBA2RGB);
 
-        Mat outMat = new Mat();
+            if (outMat == null) {
+                outMat = new Mat();
+            }
 
-        int arrListSize = results.size();
-        Result results1[] = results.toArray(new Result[arrListSize]);
+//        int arrListSize = results.size();
+//        Result results1[] = results.toArray(new Result[arrListSize]);
 
-        DrawSeg(frameMat.getNativeObjAddr(), outMat.getNativeObjAddr(), results1, labels);
+            DrawSeg(frameMat.getNativeObjAddr(), outMat.getNativeObjAddr(), null, labels);
 
-        frameMat.release();
-
+            frameMat.release();
+        }
 
 
         // back camera 인 경우는 화면을 180도 뒤집는다.

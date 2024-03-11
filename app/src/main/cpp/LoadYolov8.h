@@ -6,11 +6,15 @@
 #define OPENCV_LOADYOLOV8_H
 
 #include "../../../../sdk/native/jni/include/opencv2/dnn/dnn.hpp"
+#include "Result.h"
 
 class LoadYolov8 {
+
+
 public:
     static cv::dnn::Net net;
     static std::vector<std::string> labels;
+    static std::vector<Result> lists;
 };
 
 

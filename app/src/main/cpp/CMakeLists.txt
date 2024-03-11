@@ -60,6 +60,7 @@ find_library( # Sets the name of the path variable.
         # Specifies the name of the NDK library that
         # you want CMake to locate.
         log
+        lib_opencv
         android)
 
 # Specifies libraries CMake should link to your target library. You
